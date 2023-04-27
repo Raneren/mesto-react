@@ -1,0 +1,12 @@
+.form__input-error {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 32px;
+  font-family: "Inter", "Arial", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #ff0000;
+}

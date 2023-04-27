@@ -1,0 +1,21 @@
+.button_type_edit {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  background: url(../../../images/button-edit.svg) no-repeat center;
+  background-size: contain;
+  margin-top: 6px;
+}
+.button_type_edit:focus{
+  outline: none;
+}
+@media screen and (max-width: 425px) {
+  .button_type_edit {
+    width: 18px;
+    height: 18px;
+    margin-top: 0;
+    grid-area: 1/1/2/3;
+    justify-self: end;
+    left: 28px;
+  }
+}
