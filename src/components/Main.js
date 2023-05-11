@@ -1,22 +1,12 @@
 import React from "react";
 import Card from "./Card";
-import Api from "../utils/Api";
+import api from "../utils/Api";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function Main(props) {
 
-  const [cards, setCards] = React.useState([]);
-
   const currentUser = React.useContext(CurrentUserContext);
 
-  React.useEffect(() => {
-    Api
-      .getInitialCards()
-      .then((cardsData) => {
-        setCards(cardsData);
-      })
-      .catch((err) => console.log(err));
-  }, []);
   return (
     <main className="content">
       <section className="profile">
@@ -47,13 +37,15 @@ function Main(props) {
         ></button>
       </section>
       <section className="elements">
-        {cards.map((item) => (
+        {props.cards.map((item) => (
           <Card
             card={item}
             link={item.link}
             name={item.name}
             key={item._id}
             onCardClick={props.onCardClick}
+            onCardLike={props.onCardLike}
+            onCardDelete={props.onCardDelete}
           />
         ))}
       </section>

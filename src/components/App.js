@@ -4,16 +4,24 @@ import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm ";
 import ImagePopup from "./ImagePopup";
-import Api from "../utils/Api";
+import api from "../utils/Api";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function App() {
   const [currentUser, setcurrentUser] = React.useState("");
+  const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
-    Api.getUserInfo()
+    api
+      .getUserInfo()
       .then((userData) => {
         setcurrentUser(userData);
+      })
+      .catch((err) => console.log(err));
+    api
+      .getInitialCards()
+      .then((cardsData) => {
+        setCards(cardsData);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -50,15 +58,39 @@ function App() {
     setSelectedCard(card);
     setIsImagePopupOpen(true);
   }
+
+  function handleCardLike(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some((user) => user._id === currentUser._id);
+
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+      setCards((cards) =>
+        cards.map((currentCard) =>
+          currentCard._id === card._id ? newCard : currentCard
+        )
+      );
+    });
+  }
+  function handleCardDelete(card) {
+    api.deleteCardOnServer(card._id).then(() => {
+      setCards((cards) =>
+        cards.filter((currentCard) => currentCard._id != card._id)
+      );
+    });
+  }
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
         <Header />
         <Main
+          cards={cards}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
         />
         <Footer />
         <PopupWithForm

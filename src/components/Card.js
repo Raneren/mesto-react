@@ -9,6 +9,12 @@ function Card(props) {
   function handleClick() {
     props.onCardClick(props.card);
   }
+  function handleLikeClick() {
+    props.onCardLike(props.card);
+  }
+  function handleDeleteClick() {
+    props.onCardDelete(props.card);
+  }
   return (
     <article className="element">
       <div
@@ -17,13 +23,18 @@ function Card(props) {
         style={{ backgroundImage: `url(${props.link})` }}
       ></div>
       {isOwn && (
-        <button type="button" className="button button_type_delete"></button>
+        <button
+          type="button"
+          onClick={handleDeleteClick}
+          className="button button_type_delete"
+        ></button>
       )}
       <div className="element__info">
         <h2 className="element__title">{props.name}</h2>
         <div className="element__likes-container">
           <button
             type="button"
+            onClick={handleLikeClick}
             className={`button button_type_like ${
               isLiked && "button_type_like_active"
             }`}

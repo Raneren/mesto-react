@@ -76,27 +76,27 @@ class Api {
       },
     }).then((res) => this._checkResponse(res));
   }
-  //Метод отправки лайка на сервер
-  addLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: "PUT",
-      headers: {
-        authorization: this._authorization,
-        "Content-Type": "application/json",
-      },
-    }).then((res) => this._checkResponse(res));
-  }
-
-  //Метод удаления лайка с сервера
-  deleteLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: "DELETE",
-      headers: {
-        authorization: this._authorization,
-      },
-    }).then((res) => this._checkResponse(res));
+  //Метод удаления/отправки лайка на сервер
+  changeLikeCardStatus(cardId, isLiked) {
+    if (isLiked) {
+      return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+        method: "DELETE",
+        headers: {
+          authorization: this._authorization,
+        },
+      }).then((res) => this._checkResponse(res));
+    } else {
+      return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+        method: "PUT",
+        headers: {
+          authorization: this._authorization,
+          "Content-Type": "application/json",
+        },
+      }).then((res) => this._checkResponse(res));
+    }
   }
 }
+
 //Класс для работы с Api
 const api = new Api({
   baseUrl: "https://mesto.nomoreparties.co/v1/cohort-63",
