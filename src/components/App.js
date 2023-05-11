@@ -6,16 +6,18 @@ import PopupWithForm from "./PopupWithForm ";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/Api";
 import CurrentUserContext from "../contexts/CurrentUserContext";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 
 function App() {
-  const [currentUser, setcurrentUser] = React.useState("");
+  const [currentUser, setCurrentUser] = React.useState("");
   const [cards, setCards] = React.useState([]);
-
+  //Получаем данные профиля и карточки с сервера
   React.useEffect(() => {
     api
       .getUserInfo()
       .then((userData) => {
-        setcurrentUser(userData);
+        setCurrentUser(userData);
       })
       .catch((err) => console.log(err));
     api
@@ -58,7 +60,7 @@ function App() {
     setSelectedCard(card);
     setIsImagePopupOpen(true);
   }
-
+  //функция лайка карточки
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some((user) => user._id === currentUser._id);
@@ -72,6 +74,7 @@ function App() {
       );
     });
   }
+  //функция удаления карточки
   function handleCardDelete(card) {
     api.deleteCardOnServer(card._id).then(() => {
       setCards((cards) =>
@@ -79,6 +82,26 @@ function App() {
       );
     });
   }
+  //функция редактирования профиля
+  function handleUpdateUser(value) {
+    api
+      .setUserInfo(value)
+      .then((userData) => {
+        setCurrentUser(userData);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(err));
+  }
+    //функция редактирования аватара
+    function handleUpdateAvatar(value) {
+      api
+        .setUserAvatar(value)
+        .then((userData) => {
+          setCurrentUser(userData);
+          closeAllPopups();
+        })
+        .catch((err) => console.log(err));
+    }
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
@@ -93,39 +116,10 @@ function App() {
           onCardDelete={handleCardDelete}
         />
         <Footer />
-        <PopupWithForm
-          title="Редактировать профиль"
-          name="profile"
+        <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
-          children={
-            <>
-              <fieldset className="form__field">
-                <input
-                  className="form__input form__input_type_name"
-                  type="text"
-                  placeholder="Имя"
-                  name="name"
-                  minLength="2"
-                  maxLength="40"
-                  required
-                />
-                <span className="form__input-error name-error"></span>
-              </fieldset>
-              <fieldset className="form__field">
-                <input
-                  className="form__input form__input_type_about"
-                  type="text"
-                  placeholder="О себе"
-                  name="about"
-                  minLength="2"
-                  maxLength="200"
-                  required
-                />
-                <span className="form__input-error about-error"></span>
-              </fieldset>
-            </>
-          }
+          onUpdateUser={handleUpdateUser}
         />
         <PopupWithForm
           name="card"
@@ -159,25 +153,10 @@ function App() {
             </>
           }
         />
-        <PopupWithForm
-          name="avatar"
-          title="Обновить аватар"
+        <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
-          children={
-            <>
-              <fieldset className="form__field">
-                <input
-                  className="form__input form__input_type_link"
-                  type="url"
-                  placeholder="Ссылка на картинку"
-                  name="avatar"
-                  required
-                />
-                <span className="form__input-error avatar-error"></span>
-              </fieldset>
-            </>
-          }
+          onUpdateAvatar={handleUpdateAvatar}
         />
         <ImagePopup
           name={selectedCard.name}
