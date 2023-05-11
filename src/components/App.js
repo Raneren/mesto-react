@@ -2,12 +2,12 @@ import React from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm ";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/Api";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
   const [currentUser, setCurrentUser] = React.useState("");
@@ -92,16 +92,26 @@ function App() {
       })
       .catch((err) => console.log(err));
   }
-    //функция редактирования аватара
-    function handleUpdateAvatar(value) {
-      api
-        .setUserAvatar(value)
-        .then((userData) => {
-          setCurrentUser(userData);
-          closeAllPopups();
-        })
-        .catch((err) => console.log(err));
-    }
+  //функция редактирования аватара
+  function handleUpdateAvatar(value) {
+    api
+      .setUserAvatar(value)
+      .then((userData) => {
+        setCurrentUser(userData);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(err));
+  }
+  //функция добавления карточки
+  function handleAddPlaceSubmit(card) {
+    api
+      .addNewCard(card)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(err));
+  }
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
@@ -121,37 +131,10 @@ function App() {
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
         />
-        <PopupWithForm
-          name="card"
-          title="Новое место"
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-          children={
-            <>
-              <fieldset className="form__field">
-                <input
-                  className="form__input form__input_type_place"
-                  type="text"
-                  placeholder="Название"
-                  name="name"
-                  minLength="2"
-                  maxLength="30"
-                  required
-                />
-                <span className="form__input-error name-error"></span>
-              </fieldset>
-              <fieldset className="form__field">
-                <input
-                  className="form__input form__input_type_link"
-                  type="url"
-                  placeholder="Ссылка на картинку"
-                  name="link"
-                  required
-                />
-                <span className="form__input-error link-error"></span>
-              </fieldset>
-            </>
-          }
+          onAddPlace={handleAddPlaceSubmit}
         />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
