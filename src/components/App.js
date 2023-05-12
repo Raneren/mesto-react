@@ -10,7 +10,7 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
-  const [currentUser, setCurrentUser] = React.useState("");
+  const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   //Получаем данные профиля и карточки с сервера
   React.useEffect(() => {
@@ -66,21 +66,27 @@ function App() {
     const isLiked = card.likes.some((user) => user._id === currentUser._id);
 
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
-      setCards((cards) =>
-        cards.map((currentCard) =>
-          currentCard._id === card._id ? newCard : currentCard
-        )
-      );
-    });
+    api
+      .changeLikeCardStatus(card._id, isLiked)
+      .then((newCard) => {
+        setCards((cards) =>
+          cards.map((currentCard) =>
+            currentCard._id === card._id ? newCard : currentCard
+          )
+        );
+      })
+      .catch((err) => console.log(err));
   }
   //функция удаления карточки
   function handleCardDelete(card) {
-    api.deleteCardOnServer(card._id).then(() => {
-      setCards((cards) =>
-        cards.filter((currentCard) => currentCard._id != card._id)
-      );
-    });
+    api
+      .deleteCardOnServer(card._id)
+      .then(() => {
+        setCards((cards) =>
+          cards.filter((currentCard) => currentCard._id != card._id)
+        );
+      })
+      .catch((err) => console.log(err));
   }
   //функция редактирования профиля
   function handleUpdateUser(value) {

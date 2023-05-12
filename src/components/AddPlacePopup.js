@@ -22,7 +22,7 @@ function AddPlacePopup(props) {
   React.useEffect(() => {
     setPlaceName("");
     setPlaceLink("");
-  }, []);
+  }, [props.isOpen]);
   return (
     <PopupWithForm
       name="card"
@@ -40,7 +40,7 @@ function AddPlacePopup(props) {
               name="name"
               minLength="2"
               maxLength="30"
-              value={placeName}
+              value={placeName || ""}
               onChange={handleChangePlaceName}
               required
             />
@@ -52,7 +52,7 @@ function AddPlacePopup(props) {
               type="url"
               placeholder="Ссылка на картинку"
               name="link"
-              value={placeLink}
+              value={placeLink || ""}
               onChange={handleChangePlaceLink}
               required
             />

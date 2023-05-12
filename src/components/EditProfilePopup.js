@@ -10,7 +10,7 @@ function EditProfilePopup(props) {
   React.useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-  }, [currentUser]);
+  }, [currentUser, props.isOpen]);
 
   function handleChangeName(e) {
     setName(e.target.value);
@@ -22,13 +22,13 @@ function EditProfilePopup(props) {
   function handleSubmit(e) {
     // Запрещаем браузеру переходить по адресу формы
     e.preventDefault();
-  
+
     // Передаём значения управляемых компонентов во внешний обработчик
     props.onUpdateUser({
       name,
       about: description,
     });
-  } 
+  }
   return (
     <PopupWithForm
       title="Редактировать профиль"
@@ -46,7 +46,7 @@ function EditProfilePopup(props) {
               name="name"
               minLength="2"
               maxLength="40"
-              value={name}
+              value={name || ""}
               onChange={handleChangeName}
               required
             />
@@ -60,7 +60,7 @@ function EditProfilePopup(props) {
               name="about"
               minLength="2"
               maxLength="200"
-              value={description}
+              value={description || ""}
               onChange={handleChangeDescription}
               required
             />
